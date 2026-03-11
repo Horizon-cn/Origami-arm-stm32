@@ -1,0 +1,5 @@
+../Core/Src/BNO085.c:4:6:send_feature_command	56	static
+../Core/Src/BNO085.c:35:5:read_quaternion	64	static
+../Core/Src/BNO085.c:66:12:conjugate	72	static
+../Core/Src/BNO085.c:76:12:multiply	88	static
+../Core/Src/BNO085.c:85:12:quaternionDifference	88	static
