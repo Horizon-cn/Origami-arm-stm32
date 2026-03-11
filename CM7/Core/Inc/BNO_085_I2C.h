@@ -6,6 +6,10 @@ extern "C" {
 #endif
 
 #include "main.h"
+#include "i2c.h"
+#include "usart.h"
+#include "tim.h"
+#include "gpio.h"
 
 // Used to eneble or disable functions needed for rough telescope position
 // Uncomment lne below for fully featured driver

@@ -4,6 +4,10 @@
 #include <stdbool.h>
 #include "BNO_085_I2C.h"
 #include "main.h"
+#include "i2c.h"
+#include "usart.h"
+#include "tim.h"
+#include "gpio.h"
 
 //Global Variables
 
