@@ -36,6 +36,8 @@ extern "C" {
 #include <string.h>
 #include "BNO085.h"
 #include "i2c-mux.h"
+#include "BNO_085_I2C.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

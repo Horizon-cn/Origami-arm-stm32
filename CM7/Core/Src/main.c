@@ -156,20 +156,27 @@ Error_Handler();
   uint32_t *CCR4 = (uint32_t*)(TIM4_ADDR + TIM4_CCR4_OFFSET);
   *CCR4 = 25;
 
-  i2c_mux_t mux = {
-    .hi2c = &hi2c1,
-    .addr_offset = 0,
-    .rst_port = NULL,
-    .rst_pin = 0
-  };
+  // i2c_mux_t mux = {
+  //   .hi2c = &hi2c1,
+  //   .addr_offset = 0,
+  //   .rst_port = NULL,
+  //   .rst_pin = 0
+  // };
 
-  init_BNO(&hi2c1, REPORT_FREQ_HZ, &mux, NUM_OF_CHANNELS);
+  // init_BNO(&hi2c1, REPORT_FREQ_HZ, &mux, NUM_OF_CHANNELS);
 
-  for(int i = 0;i<NUM_OF_CHANNELS;i++){
-  	 read_init_angle(&hi2c1,initial_angle,i);
+  // for(int i = 0;i<NUM_OF_CHANNELS;i++){
+  // 	 read_init_angle(&hi2c1,initial_angle,i);
+  // }
+
+  // printf("Initial angles: %d\r\n", initial_angle[0]);
+
+  if (init_BNO085() != HAL_OK) {
+        printf("BNO085 初始化失败！\r\n");
+        while(1);
+    }
+    printf("BNO085 初始化完成，开始采集数据\r\n\r\n");
   }
-
-  printf("Initial angles: %d, %d, %d, %d\r\n", initial_angle[0], initial_angle[1], initial_angle[2], initial_angle[3]);
 
   HAL_Delay(1000);
 
@@ -211,6 +218,7 @@ Error_Handler();
   HAL_TIM_Base_Start_IT(&htim3);
 
   printf("while begins\r\n");
+  
   while (1)
   {
 	  strcpy((char*)buf, "Hello\r\n");
@@ -226,6 +234,15 @@ Error_Handler();
 	  // bno.acc(&bno, &acc);
     //   printf("[+] GYR - x: %+2.2f | y: %+2.2f | z: %+2.2f\r\n", gyr.x, gyr.y, gyr.z);
 	  // printf("[+] ACC - x: %+2.2f | y: %+2.2f | z: %+2.2f\r\n", acc.x, acc.y, acc.z);
+
+    BNO_Accelerometer_t accel = {0};
+        
+    if (read_accelerometer_data(&accel) == HAL_OK) {
+        printf("X: %.2f, Y: %.2f, Z: %.2f (m/s²)\r\n",
+                accel.X, accel.Y, accel.Z);
+    } else {
+        printf("Failed to read accelerometer data\r\n");
+    }
 
 	while(time == 0){
 
