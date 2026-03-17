@@ -142,6 +142,7 @@ Error_Handler();
   MX_TIM3_Init();
   MX_I2C1_Init();
   MX_LPUART1_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   uint32_t *CCR3 = (uint32_t*)(TIM4_ADDR + TIM4_CCR3_OFFSET);
   *CCR3 = 25;
@@ -168,7 +169,7 @@ Error_Handler();
         while(1);
     }
     printf("BNO085 初始化完成，开始采集数据\r\n\r\n");
-  }
+  
 
   HAL_Delay(1000);
 

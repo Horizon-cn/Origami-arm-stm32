@@ -1,0 +1,6 @@
+../Core/Src/main.c:73:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/main.c:84:5:main	64	static
+../Core/Src/main.c:255:6:SystemClock_Config	120	static
+../Core/Src/main.c:307:1:__io_putchar	16	static
+../Core/Src/main.c:317:6:MPU_Config	24	static
+../Core/Src/main.c:348:6:Error_Handler	4	static,ignoring_inline_asm

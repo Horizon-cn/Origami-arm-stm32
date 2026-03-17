@@ -34,7 +34,8 @@ Core/Src/stm32h7xx_it.o: ../Core/Src/stm32h7xx_it.c ../Core/Inc/main.h \
  ../Core/Inc/bno055.h \
  ../../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h \
  ../Core/Inc/BNO085.h ../Core/Inc/main.h ../Core/Inc/i2c-mux.h \
- ../Core/Inc/BNO_085_I2C.h ../Core/Inc/stm32h7xx_it.h
+ ../Core/Inc/BNO_085_I2C.h ../Core/Inc/i2c.h ../Core/Inc/usart.h \
+ ../Core/Inc/tim.h ../Core/Inc/gpio.h ../Core/Inc/stm32h7xx_it.h
 ../Core/Inc/main.h:
 ../../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -74,4 +75,8 @@ Core/Src/stm32h7xx_it.o: ../Core/Src/stm32h7xx_it.c ../Core/Inc/main.h \
 ../Core/Inc/main.h:
 ../Core/Inc/i2c-mux.h:
 ../Core/Inc/BNO_085_I2C.h:
+../Core/Inc/i2c.h:
+../Core/Inc/usart.h:
+../Core/Inc/tim.h:
+../Core/Inc/gpio.h:
 ../Core/Inc/stm32h7xx_it.h:

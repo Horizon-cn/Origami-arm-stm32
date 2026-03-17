@@ -757,16 +757,16 @@ static HAL_StatusTypeDef getID(void) {
 // If the pin is pulled low during reset or poweron, the BNO08X will enter the bootloader mode.
 // If the BOOTN pin is pulled high, then the bootloader starts the application
 HAL_StatusTypeDef BNO_Init(void) {
-	BNO_BOOT_On; // Off only for DFU mode 0x52 I2C Address
+	//BNO_BOOT_On; // Off only for DFU mode 0x52 I2C Address
 	// Set reset pin low
-	BNO_RST_Off;
+	// BNO_RST_Off;
 	HAL_Delay(RESET_DELAY);
 	// Start us timer
 	start_timer();
 	// Enable interrupt BNO_Ready
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 	// Delay for RESET_DELAY_US to ensure reset takes effect
-	BNO_RST_On;
+	// BNO_RST_On;
 	HAL_Delay(RESET_DELAY);
 	// If we got the initiat packet we make a soft reset
 	//if(waitForPacket()) {
