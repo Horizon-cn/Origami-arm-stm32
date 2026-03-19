@@ -57,11 +57,23 @@ BNO_SensorValue_t sensorData = {0};
 
 uint32_t counter;
 
+static void logI2cFailure(const char *operation, uint16_t address, uint16_t length) {
+	uint32_t error = HAL_I2C_GetError(&hi2c1);
+	HAL_I2C_StateTypeDef state = HAL_I2C_GetState(&hi2c1);
+	printf("[BNO085][I2C] %s failed addr=0x%02X len=%u state=%lu err=0x%08lX\r\n",
+			operation,
+			address,
+			length,
+			(unsigned long)state,
+			(unsigned long)error);
+}
+
 // Wait for an interrupt to occur or timeout in 200ms
 static uint8_t waitInt(void) {
 	uint32_t timeOut = HAL_GetTick() + RESET_DELAY;
 	while(timeOut > HAL_GetTick()) {
-		if(BNO_Ready) {
+		if(1) {
+			HAL_Delay(1000); 
 			BNO_Ready = 0;
 			return 1;
 		}
@@ -201,6 +213,7 @@ static HAL_StatusTypeDef sendPacket(const uint8_t channelNumber) {
     #ifdef USE_I2C_DMA
         //i2c1_transfer_complete = 0;  // Reset DMA transfer complete flag
         if (HAL_I2C_Master_Transmit_DMA(&hi2c1, BNO_W_ADDR, bufferIO, dataLength) != HAL_OK) {
+			logI2cFailure("TX_DMA", BNO_W_ADDR, dataLength);
             return HAL_ERROR;  // Return error if DMA transmission fails
         }
         // Wait for DMA transfer to complete
@@ -208,6 +221,7 @@ static HAL_StatusTypeDef sendPacket(const uint8_t channelNumber) {
 				while (HAL_I2C_GetState(&hi2c1) != HAL_I2C_STATE_READY) { }
     #else
         if (HAL_I2C_Master_Transmit(&hi2c1, BNO_W_ADDR, bufferIO, dataLength, HAL_MAX_DELAY) != HAL_OK) {
+			logI2cFailure("TX", BNO_W_ADDR, dataLength);
             return HAL_ERROR;  // Return error if transmission fails
         }
     #endif
@@ -226,6 +240,7 @@ static HAL_StatusTypeDef receivePacket(void) {
     #ifdef USE_I2C_DMA
         //i2c1_transfer_complete = 0;  // Reset DMA transfer complete flag
         if (HAL_I2C_Master_Receive_DMA(&hi2c1, BNO_R_ADDR, bufferIO, HEADER_SIZE) != HAL_OK) {
+			logI2cFailure("RX_HDR_DMA", BNO_R_ADDR, HEADER_SIZE);
             return HAL_ERROR;  // Return error if DMA reception fails
         }
         // Wait for DMA transfer to complete
@@ -233,6 +248,7 @@ static HAL_StatusTypeDef receivePacket(void) {
 				while (HAL_I2C_GetState(&hi2c1) != HAL_I2C_STATE_READY) { }
     #else
         if (HAL_I2C_Master_Receive(&hi2c1, BNO_R_ADDR, bufferIO, HEADER_SIZE, HAL_MAX_DELAY) != HAL_OK) {
+			logI2cFailure("RX_HDR", BNO_R_ADDR, HEADER_SIZE);
             return HAL_ERROR;  // Return error if reception fails
         }
     #endif
@@ -249,6 +265,7 @@ static HAL_StatusTypeDef receivePacket(void) {
     #ifdef USE_I2C_DMA
         //i2c1_transfer_complete = 0;  // Reset DMA transfer complete flag
         if (HAL_I2C_Master_Receive_DMA(&hi2c1, BNO_R_ADDR, bufferIO, rxPacketLength) != HAL_OK) {
+			logI2cFailure("RX_PKT_DMA", BNO_R_ADDR, rxPacketLength);
             return HAL_ERROR;  // Return error if DMA reception fails
         }
         // Wait for DMA transfer to complete
@@ -256,6 +273,7 @@ static HAL_StatusTypeDef receivePacket(void) {
 				while (HAL_I2C_GetState(&hi2c1) != HAL_I2C_STATE_READY) { }
     #else
         if (HAL_I2C_Master_Receive(&hi2c1, BNO_R_ADDR, bufferIO, rxPacketLength, HAL_MAX_DELAY) != HAL_OK) {
+			logI2cFailure("RX_PKT", BNO_R_ADDR, rxPacketLength);
             return HAL_ERROR;  // Return error if reception fails
         }
     #endif
@@ -764,7 +782,7 @@ HAL_StatusTypeDef BNO_Init(void) {
 	// Start us timer
 	start_timer();
 	// Enable interrupt BNO_Ready
-	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+	//HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 	// Delay for RESET_DELAY_US to ensure reset takes effect
 	// BNO_RST_On;
 	HAL_Delay(RESET_DELAY);

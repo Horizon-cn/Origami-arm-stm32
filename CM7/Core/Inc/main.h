@@ -37,6 +37,7 @@ extern "C" {
 #include "BNO085.h"
 #include "i2c-mux.h"
 #include "BNO_085_I2C.h"
+#include "tca9548apwr.h"
 
 /* USER CODE END Includes */
 

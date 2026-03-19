@@ -19,12 +19,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "i2c.h"
-#include "usart.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 #define TIM4_CCR3_OFFSET 0x3C
 #define TIM4_CCR4_OFFSET 0x40
 #define TIM4_ADDR 0x40000800
@@ -40,6 +41,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+HAL_StatusTypeDef a;
+int read_data = 0;
 
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
@@ -141,8 +144,8 @@ Error_Handler();
   MX_TIM4_Init();
   MX_TIM3_Init();
   MX_I2C1_Init();
-  MX_LPUART1_UART_Init();
   MX_TIM2_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   uint32_t *CCR3 = (uint32_t*)(TIM4_ADDR + TIM4_CCR3_OFFSET);
   *CCR3 = 25;
@@ -164,9 +167,28 @@ Error_Handler();
 
   // printf("Initial angles: %d\r\n", initial_angle[0]);
 
+//    if (BNO_Init() != HAL_OK) {
+//        printf("BNO085 initialization failed!\r\n");
+//        while(1){
+//        	printf("BNO085 initialization failed!\r\n");
+//        };
+//    }
+//    printf("BNO085 initialization successful, starting data collection\r\n\r\n");
+//
+//    HAL_Delay(1000);
+
+    //HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+    //HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
+
+  TCA9548A_SetChannel(0);
+  read_data = TCA9548A_Init();
+
+
   if (init_BNO085() != HAL_OK) {
         printf("BNO085 初始化失败！\r\n");
-        while(1);
+        while(1){
+        	printf("failed\r\n");
+        }
     }
     printf("BNO085 初始化完成，开始采集数据\r\n\r\n");
   
@@ -214,8 +236,8 @@ Error_Handler();
   
   while (1)
   {
-	  strcpy((char*)buf, "Hello\r\n");
-	  HAL_UART_Transmit(&hlpuart1, buf, strlen((char*)buf), HAL_MAX_DELAY);
+	  //strcpy((char*)buf, "Hello\r\n");
+	  //HAL_UART_Transmit(&hlpuart1, buf, strlen((char*)buf), HAL_MAX_DELAY);
 //	  ret = HAL_I2C_Master_Transmit(&hi2c1, tca, &sel, 1, 100);
 //	  if(ret != HAL_OK){
 //		  strcpy((char*)buf, "Error Tx\r\n");
@@ -289,7 +311,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
@@ -299,16 +321,16 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-#ifdef __GNUC__
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-  #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
-PUTCHAR_PROTOTYPE
-{
-  HAL_UART_Transmit(&hlpuart1, (uint8_t *)&ch, 1, 0xFFFF);
-  return ch;
-}
+ #ifdef __GNUC__
+ #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+ #else
+   #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+ #endif /* __GNUC__ */
+ PUTCHAR_PROTOTYPE
+ {
+   HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFFFFFF);
+   return ch;
+ }
 
 /* USER CODE END 4 */
 
